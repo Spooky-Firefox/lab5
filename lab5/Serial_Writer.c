@@ -16,10 +16,9 @@ void init_uart(){
     UCSR0C = (3<<UCSZ00); // | (1<<UCSZ01);
 }
 
-void write_cyclic(struct Serial_Writer *self, int _){
-    while(! (UCSR0A & (1<<UDRE0))){ // check if tramsit buffer is empty, if not wait //TODO make beter without busy wait
-			asm("NOP");
-		};
-    UDR0 = (uint8_t) 'A';
-    AFTER(MSEC(500), self, write_cyclic, NULL);
+void write_char(struct Serial_Writer *self, int to_send){
+    while(! (UCSR0A & (1<<UDRE0))){ // check if transmit buffer is empty, if not wait //TODO make beter without busy wait
+        asm("NOP");
+    };
+    UDR0 = (uint8_t) to_send;
 }
