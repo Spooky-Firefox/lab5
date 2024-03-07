@@ -8,9 +8,13 @@ struct Controller
 {
     Object obj;
     struct Serial_Writer *ser_writer;
-    uint8_t queue_north;
-    uint8_t queue_south;
+    
     uint8_t on_bridge;
+
+    uint8_t queue_north;
+
+    uint8_t queue_south;
+    
 };
 #define initController(serial_writer_ref) {initObject(), serial_writer_ref, 0, 0, 0}
 
