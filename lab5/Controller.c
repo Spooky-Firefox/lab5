@@ -33,8 +33,7 @@ void decode_msg(struct Controller *self, int msg){
         self->queue_north = self->queue_north+1;
 
         // write NI, north in for debug purpose
-        ASYNC(self->ser_writer,write_char,'n'); //TODO remove after testing
-        ASYNC(self->ser_writer,write_char,'i'); //TODO remove after testing
+        ASYNC(self->ser_writer, write_string, "Car entered north queue\n");
     }
     
     if(msg&0x2){ // Bit 1: Northbound bridge entry sensor activated
@@ -43,8 +42,7 @@ void decode_msg(struct Controller *self, int msg){
         // "se For our particular scenario, we will assume that a reasonable time for passing the bridge once it is entered is 5 seconds."
 
         // write NO, north out for debug purpose
-        ASYNC(self->ser_writer,write_char,'n'); //TODO remove after testing
-        ASYNC(self->ser_writer,write_char,'o'); //TODO remove after testing
+        ASYNC(self->ser_writer, write_string, "Car left north queue\n");
     }
 
 
@@ -53,8 +51,7 @@ void decode_msg(struct Controller *self, int msg){
         self->queue_north = self->queue_north+1;
 
         // write SI, north in for debug purpose
-        ASYNC(self->ser_writer,write_char,'s'); //TODO remove after testing
-        ASYNC(self->ser_writer,write_char,'i'); //TODO remove after testing
+        ASYNC(self->ser_writer, write_string, "Car entered south queue\n");
     }
     if(msg&0x8){ // Bit 3: Southbound bridge entry sensor activated
         self->queue_north = self->queue_north+1;
@@ -62,8 +59,7 @@ void decode_msg(struct Controller *self, int msg){
         // "se For our particular scenario, we will assume that a reasonable time for passing the bridge once it is entered is 5 seconds."
 
         // write SO, north out for debug purpose
-        ASYNC(self->ser_writer,write_char,'s'); //TODO remove after testing
-        ASYNC(self->ser_writer,write_char,'o'); //TODO remove after testing
+        ASYNC(self->ser_writer, write_string, "Car left south queue\n");
     }
 
     // call light handler
