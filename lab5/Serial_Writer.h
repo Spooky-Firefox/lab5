@@ -13,4 +13,8 @@ struct Serial_Writer
 void init_uart();
 
 // send the given byte to the uart
-void write_char(struct Serial_Writer *self, int to_send);
+void write_byte(struct Serial_Writer *self, int to_send);
+
+void write_string(struct Serial_Writer *self, char *str);
+
+
