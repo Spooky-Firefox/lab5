@@ -61,6 +61,10 @@ void setupLCD(struct Gui *self, int _){
 	// lcd contrast control register
 	// lcd voltage 3.35 0xf = 0b1111
 	LCDCCR = (0x7<<LCDCC0);
+
+	write_left(self,0);
+	write_center(self,0);
+	write_right(self,0);
 }
 
 // writes a char over current segments by using or on the registers
@@ -132,18 +136,21 @@ void write_right(struct Gui *self, int num){
     writeChar( (num % 10)       + '0', 5);
 }
 
-void set_s1(struct Gui *self, int state){
-	if(state){
+void blink_s1(struct Gui *self, int _){
+	if(_==0){
 		LCDDR0 = LCDDR0 | 0x06;
+		AFTER(MSEC(500), self, blink_s1, 1);
 	} else {
 		LCDDR0 = LCDDR0 & ~0x06;
 	}
 }
 
-void set_s2(struct Gui *self, int state){
-	if(state){
+void blink_s2(struct Gui *self, int _){
+	if(_==0){
 		LCDDR0 = LCDDR0 | 0x60;
+		AFTER(MSEC(500), self, blink_s2, 1);
 	} else {
 		LCDDR0 = LCDDR0 & ~0x60;
 	}
 }
+
