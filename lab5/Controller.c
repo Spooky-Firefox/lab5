@@ -1,6 +1,6 @@
 #include "Controller.h"
 
-#define BLOCK_SIZE 5
+#define BLOCK_SIZE 15
 
 // help functions to inc north queue and update display
 #define inc_north()   self->queue_north = self->queue_north+1; \
@@ -25,28 +25,19 @@
 
 void send_north_green(struct Controller *self, int _){
     PORTE = (PORTE | (1<<PE4)) & ~(1<<PE6);
-    if(self->last_state != 0x09){
-        self->last_state = 0x09;
-        ASYNC(self->ser_writer, write_byte, 0x09);
-    }
+    ASYNC(self->ser_writer, write_byte, 0x09);
     ASYNC(self->gui, blink_s1, NULL);
 }
 
 void send_south_green(struct Controller *self, int _){
     PORTE = (PORTE | (1<<PE6)) & ~(1<<PE4);
-    if(self->last_state != 0x06){
-        self->last_state = 0x06;
-        ASYNC(self->ser_writer, write_byte, 0x06);
-    }
+    ASYNC(self->ser_writer, write_byte, 0x06);
     ASYNC(self->gui, blink_s2, NULL);
 }
 
 void send_red_light(struct Controller *self, int _){
     PORTE = PORTE & ~( (1<<PE4) | (1<<PE6));
-    if(self->last_state != 0x05){
-        self->last_state = 0x05;
-        ASYNC(self->ser_writer, write_byte, 0x05);
-    }
+    ASYNC(self->ser_writer, write_byte, 0x0A);
     // ASYNC(self->gui, blink_s1, NULL);
     // ASYNC(self->gui, blink_s2, NULL);
 }
@@ -65,12 +56,13 @@ void open_north(struct Controller *self, int times_left_to_open){
         if (self-> queue_north > 0 && self->queue_south == 0){
             send_north_green(self,NULL);
             AFTER(SEC(1), self, open_north, times_left_to_open);
-        } else {
+        } 
+        else {
+            send_red_light(self, NULL);
             if (self->on_bridge){
-                send_red_light(self, NULL);
                 AFTER(SEC(5), self, open_south, BLOCK_SIZE);
             } else {
-                AFTER(MSEC(100), self, open_south, BLOCK_SIZE);
+                AFTER(MSEC(500), self, open_south, BLOCK_SIZE);
             }
         }
 
@@ -88,11 +80,11 @@ void open_south(struct Controller *self, int times_left_to_open){
             AFTER(SEC(1), self, open_south, times_left_to_open);
         }
         else{ // switch green side
+            send_red_light(self,NULL);
             if (self->on_bridge){
-                send_red_light(self,NULL);
                 AFTER(SEC(5), self, open_north, BLOCK_SIZE);
             }else{
-                ASYNC(self, open_north, BLOCK_SIZE);
+                AFTER(MSEC(500), self, open_north, BLOCK_SIZE);
             }
         }
         

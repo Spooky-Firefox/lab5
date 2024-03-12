@@ -12,8 +12,6 @@ struct Controller
     struct Serial_Writer *ser_writer;
     struct Gui *gui;
 
-    uint8_t last_state;
-
     uint8_t on_bridge;
 
     uint8_t queue_north;
@@ -21,7 +19,7 @@ struct Controller
     uint8_t queue_south;
     
 };
-#define initController(serial_writer_ref, gui_ref) {initObject(), serial_writer_ref, gui_ref, 0, 0, 0, 0}
+#define initController(serial_writer_ref, gui_ref) {initObject(), serial_writer_ref, gui_ref, 0, 0, 0}
 
 // decodes the byte sent, handels if car passed a sensor.
 // Bit 0: Northbound car arrival sensor activated
